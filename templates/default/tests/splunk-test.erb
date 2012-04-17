@@ -1,0 +1,28 @@
+require 'test/spec' 
+
+describe "SplunkChef" do
+  it "should start Splunk" do
+    # check for splunkd process  
+  end
+
+  it "should ensure Splunk starts on boot" do
+    # chkconfig or debian equivalent
+  end
+
+  it "should have a web interface" do
+    # connect to port 8080 and expect a 403
+  end
+
+  it "should change the admin password" do
+    # log in with admin:changeme should fail
+    # log in with admin:#{node['splunk']['password'] should succeed
+  end
+
+  it "should listen on the right Splunk port" do
+    # listening on port #{node['splunk']['listenport']
+  end
+ 
+  it "should create the hot and cold index directories" do
+    # #{node['splunk']['db_directory']} should exist
+  end
+end
