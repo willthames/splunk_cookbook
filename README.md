@@ -70,6 +70,11 @@ See `attributes/default.rb` for default values.
 * `node['splunk']['server_version']` - The specific version of Splunk Server to download
 * `node['splunk']['server_build]` - The specific build number of Splunk Server to download
 
+* `node['splunk']['download_location']` - Alternative path to download Splunk packages from 
+* `node['splunk']['install_from_zip?']` - If you prefer to install from zip file rather than OS specific package
+* `node['splunk']['user']` - user to install splunk package as
+* `node['splunk']['group']` - group to install splunk package as
+
 * `node['splunk']['forwarder_root']` - The base URL that splunk uses to download release files for Splunk Forwarder
 * `node['splunk']['forwarder_version']` - The specific version of Splunk Forwarder to download
 * `node['splunk']['forwarder_build]` - The specific build number of Splunk Forwarder to download

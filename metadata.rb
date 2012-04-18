@@ -1,3 +1,4 @@
+name             "splunk"
 maintainer       "Best Buy"
 maintainer_email "bryan.brandau@bestbuy.com"
 license          "Apache 2.0"

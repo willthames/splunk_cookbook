@@ -4,6 +4,9 @@ default['splunk']['cookbook_name']                = "splunk"
 #indexer configuration attributes
 default['splunk']['indexer_name']                 = "splunk_indexers"
 
+#installation package location
+default['splunk']['package_location']             = "/opt/"
+
 #directories
 default['splunk']['forwarder_home']               = "/opt/splunkforwarder"
 default['splunk']['server_home']                  = "/opt/splunk"
@@ -49,6 +52,15 @@ default['splunk']['server_config_folder']         = "prodlike"
 default['splunk']['server_root']                  = "http://download.splunk.com/releases"
 default['splunk']['server_version']               = "4.3.1"
 default['splunk']['server_build']                 = "119532"
+
+#Unfortunately we can't build download location programatically from the above
+default['splunk']['download_location']            = "http://download.splunk.com/releases/4.3.1/splunk/linux"
+
+default['splunk']['install_from_zip?']            = false
+# override splunk user to cause user to be created
+default['splunk']['user']                         = nil
+default['splunk']['group']                        = nil
+
 #Forwarder
 default['splunk']['forwarder_root']               = "http://download.splunk.com/releases"
 default['splunk']['forwarder_version']            = "4.3.1"

@@ -22,33 +22,66 @@
   splunk_package_version = "splunk-#{node['splunk']['server_version']}-#{node['splunk']['server_build']}"
 
   splunk_file = splunk_package_version + 
-    case node['platform']
-    when "centos","redhat","fedora"
-      if node['kernel']['machine'] == "x86_64"
-        "-linux-2.6-x86_64.rpm"
+    if node['kernel']['machine'] == "x86_64"
+      if node['splunk']['install_from_zip?'] 
+        "-Linux-x86_64.tgz"
       else
-        ".i386.rpm"
+        case node['platform']
+        when "centos","redhat","fedora"
+          "-linux-2.6-x86_64.rpm"
+        when "debian","ubuntu"
+          "-linux-2.6-amd64.deb"
+        end
       end
-    when "debian","ubuntu"
-      if node['kernel']['machine'] == "x86_64"
-        "-linux-2.6-amd64.deb"
+    else 
+      if node['splunk']['install_from_zip?'] 
+        "-Linux-i686.tgz"
       else
-        "-linux-2.6-intel.deb"
+        case node['platform']
+        when "centos","redhat","fedora"
+          ".i386.rpm"
+        when "debian","ubuntu"
+          "-linux-2.6-intel.deb"
+        end
       end
     end
 
-  remote_file "/opt/#{splunk_file}" do
-    source "#{node['splunk']['server_root']}/#{node['splunk']['server_version']}/splunk/linux/#{splunk_file}"
+  remote_file "/tmp/#{splunk_file}" do
+    source "#{node['splunk']['download_location']}/#{splunk_file}"
     action :create_if_missing
+    owner node['splunk']['user']
   end
 
-  package splunk_package_version do
-    source "/opt/#{splunk_file}"
-    case node['platform']
-    when "centos","redhat","fedora"
-      provider Chef::Provider::Package::Rpm
-    when "debian","ubuntu"
-      provider Chef::Provider::Package::Dpkg
+  # Add splunk user and group if required
+  if node['splunk']['user']
+    user node['splunk']['user'] do
+      system true
+      # password node['splunk']['passwordhash']
+    end
+
+    group node['splunk']['group'] do
+      not_if "getent group #{node['splunk']['group']}"
+      members [ node['splunk']['user'] ]
+    end
+  end 
+
+  if node['splunk']['install_from_zip?']
+    parent_dir = File.expand_path('..', node['splunk']['server_home'])
+    directory parent_dir do
+      recursive true
+      group node['splunk']['group']
+      mode "775"
+    end
+    execute "install from zip  in #{parent_dir} as #{node['splunk']['user']}" do
+      user node['splunk']['user']
+      group node['splunk']['group']
+      creates node['splunk']['server_home']
+      cwd parent_dir
+      command "tar xzf /tmp/#{splunk_file}"
+    end
+  else
+    package splunk_package_version do
+      source "/tmp/#{splunk_file}"
     end
   end
 
